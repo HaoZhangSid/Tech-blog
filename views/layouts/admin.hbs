@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{title}} | Admin Panel - Tech Blog</title>
+  <meta name="description" content="{{description}}">
+  
+  <!-- 使用本地Tailwind CSS -->
+  <link rel="stylesheet" href="/css/styles.css">
+  
+  <!-- 使用本地Highlight.js -->
+  <link rel="stylesheet" href="/css/atom-one-dark.css">
+  <script src="/js/highlight.min.js"></script>
+  
+  <!-- 使用本地Marked.js -->
+  <script src="/js/marked.min.js"></script>
+  
+  <!-- Google Fonts: Inter (sans-serif) and JetBrains Mono (monospace) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  
+  <!-- Custom styling for grid pattern background -->
+  <style>
+    /* Custom styling for grid pattern background */
+    .bg-grid-pattern {
+      background-color: #111827;
+      background-image: 
+        linear-gradient(rgba(30, 41, 59, 0.3) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(30, 41, 59, 0.3) 1px, transparent 1px);
+      background-size: 25px 25px;
+    }
+  </style>
+</head>
+<body class="bg-gray-900 min-h-screen flex flex-col">
+  <!-- Skip to main content link for keyboard users -->
+  <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-cyan-600 text-white px-4 py-2 rounded-md z-50">Skip to main content</a>
+  
+  <!-- Main content area -->
+  <main id="main-content" class="flex-1" tabindex="-1">
+    {{{body}}}
+  </main>
+  
+  <!-- Admin footer -->
+  <footer class="bg-gray-800 border-t border-gray-700 py-4" role="contentinfo">
+    <div class="container mx-auto px-4">
+      <div class="flex flex-col md:flex-row justify-between items-center">
+        <p class="text-gray-400 text-sm">© {{currentYear}} Tech Blog Admin Panel</p>
+        <div class="mt-2 md:mt-0">
+          <a href="/" class="text-cyan-400 hover:text-cyan-300 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-cyan-500 rounded-md px-2 py-1">View Blog</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+  
+  <!-- JavaScript for common admin functionality -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      //Make sure the marked library is loaded correctly
+      console.log('Marked library loaded:', typeof marked !== 'undefined');
+      
+      // Initialize syntax highlighting for code preview
+      if (typeof hljs !== 'undefined') {
+        document.querySelectorAll('pre code').forEach((block) => {
+          hljs.highlightBlock(block);
+        });
+      }
+      
+      // Flash messages auto-hide after 5 seconds
+      const flashMessages = document.querySelectorAll('.flash-message');
+      if (flashMessages.length) {
+        setTimeout(() => {
+          flashMessages.forEach(message => {
+            message.classList.add('opacity-0');
+            setTimeout(() => {
+              message.remove();
+            }, 300);
+          });
+        }, 5000);
+      }
+      
+      // Make form error messages accessible with WAI-ARIA
+      const errorMessages = document.querySelectorAll('.error-message');
+      if (errorMessages.length) {
+        errorMessages.forEach(message => {
+          const targetId = message.getAttribute('data-for');
+          if (targetId) {
+            const targetField = document.getElementById(targetId);
+            if (targetField) {
+              targetField.setAttribute('aria-invalid', 'true');
+              targetField.setAttribute('aria-describedby', `${targetId}-error`);
+              message.id = `${targetId}-error`;
+              message.setAttribute('role', 'alert');
+            }
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html> 

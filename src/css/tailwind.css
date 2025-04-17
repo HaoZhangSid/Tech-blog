@@ -1,0 +1,72 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom styles */
+@layer base {
+  body {
+    @apply bg-gray-900 text-gray-100 font-sans;
+  }
+  
+  code, pre {
+    @apply font-mono;
+  }
+}
+
+@layer components {
+  /* Code highlight related styles */
+  .hljs {
+    @apply bg-gray-950 !important;
+    @apply rounded-md;
+    @apply p-4;
+  }
+  
+  /* Custom prose style */
+  .prose {
+    @apply text-gray-100;
+  }
+  
+  .prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 {
+    @apply text-white;
+  }
+  
+  .prose a {
+    @apply text-primary-400 no-underline;
+  }
+  
+  .prose a:hover {
+    @apply text-primary-500 underline;
+  }
+  
+  .prose strong {
+    @apply text-white;
+  }
+  
+  .prose blockquote {
+    @apply border-l-gray-600 text-gray-400;
+  }
+  
+  /* Line number style */
+  pre {
+    @apply relative;
+  }
+  
+  .line-numbers-container {
+    @apply absolute left-0 top-0 py-4 pr-2 pl-0 w-10 text-right text-gray-500 border-r border-gray-700;
+    @apply select-none;
+  }
+  
+  .line-number {
+    @apply block;
+    @apply h-5 leading-5;
+  }
+  
+  .line-number:before {
+    @apply text-sm;
+    content: counter(line);
+  }
+  
+  .line-numbers-container + code {
+    @apply ml-12 pl-0 !important;
+  }
+} 

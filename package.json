@@ -1,0 +1,31 @@
+{
+  "name": "tech-blog",
+  "version": "1.0.0",
+  "description": "A tech blog built with Express and Handlebars",
+  "main": "server.js",
+  "scripts": {
+    "start": "npm run build:css && npm run build:js && nodemon server.js",
+    "dev": "concurrently \"npm run watch:css\" \"npm run watch:js\" \"nodemon server.js\"",
+    "prod": "npm run build:css && npm run build:js && node server.js",
+    "build:css": "postcss src/css/tailwind.css -o public/css/styles.css --minify",
+    "watch:css": "postcss src/css/tailwind.css -o public/css/styles.css --watch",
+    "build:js": "esbuild public/js/highlight-bundle.js --bundle --minify --outfile=public/js/highlight.min.js --format=iife && cp node_modules/marked/marked.min.js public/js/",
+    "watch:js": "esbuild public/js/highlight-bundle.js --bundle --outfile=public/js/highlight.min.js --format=iife --watch"
+  },
+  "dependencies": {
+    "@tailwindcss/typography": "^0.5.10",
+    "autoprefixer": "^10.4.19",
+    "express": "^5.1.0",
+    "express-handlebars": "^8.0.1",
+    "highlight.js": "^11.11.1",
+    "marked": "^15.0.8",
+    "postcss": "^8.4.38",
+    "tailwindcss": "^3.4.17"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "esbuild": "^0.20.2",
+    "nodemon": "^3.1.9",
+    "postcss-cli": "^11.0.1"
+  }
+}
