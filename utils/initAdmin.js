@@ -12,8 +12,8 @@ const User = require('../models/User');
 // Default admin credentials - CHANGE IN PRODUCTION!
 const defaultAdmin = {
   name: 'Admin User',
-  email: 'admin@techblog.com',
-  password: 'AdminPass123!'
+  email: 'dexter199057@gmail.com',
+  password: 'qwer1234'
 };
 
 async function initializeAdmin() {

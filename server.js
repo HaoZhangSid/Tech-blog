@@ -25,6 +25,8 @@ require('dotenv').config();
 // Import models and middleware
 const User = require('./models/User');
 const { ensureAuthenticated } = require('./middleware/auth');
+const { generateResetToken, hashToken, verifyToken, getTokenExpiration } = require('./utils/tokenGenerator');
+const emailSender = require('./utils/emailSender');
 
 // Initialize Express app
 const app = express();
@@ -254,14 +256,31 @@ app.post('/forgot-password', [
     
     // Always show success message, even if user doesn't exist (security best practice)
     req.flash('success_msg', 'If your email is registered, you will receive password reset instructions');
-    res.redirect('/login');
     
-    // If user exists, generate reset token and send email (in a real implementation)
+    // If user exists, generate reset token and send email
     if (user) {
-      // Here you would generate a token, save it to the user document,
-      // and send an email with the reset link using Nodemailer
-      console.log(`Password reset requested for user: ${user.email}`);
+      // Generate token
+      const resetToken = generateResetToken();
+      const hashedToken = hashToken(resetToken);
+      const tokenExpiration = getTokenExpiration();
+      
+      // Save token to user document
+      user.resetPasswordToken = hashedToken;
+      user.resetPasswordExpires = tokenExpiration;
+      await user.save();
+      
+      // Send password reset email
+      try {
+        await emailSender.sendPasswordResetEmail(user.email, resetToken, user.name);
+        console.log(`Password reset email sent to: ${user.email}`);
+      } catch (emailError) {
+        console.error('Failed to send password reset email:', emailError);
+        // Don't expose this error to the user - they already got the success message
+      }
     }
+    
+    // Redirect after processing
+    res.redirect('/login');
   } catch (err) {
     console.error('Forgot password error:', err);
     req.flash('error', 'An error occurred. Please try again.');
@@ -270,12 +289,33 @@ app.post('/forgot-password', [
 });
 
 // Reset password page
-app.get('/reset-password/:token', (req, res) => {
-  res.render('reset-password', {
-    title: 'Reset Password',
-    description: 'Set a new password for your account',
-    token: req.params.token
-  });
+app.get('/reset-password/:token', async (req, res) => {
+  try {
+    const { token } = req.params;
+    const hashedToken = hashToken(token);
+    
+    // Find user with this token and check if it's still valid
+    const user = await User.findOne({
+      resetPasswordToken: hashedToken,
+      resetPasswordExpires: { $gt: Date.now() }
+    });
+    
+    if (!user) {
+      req.flash('error_msg', 'Password reset token is invalid or has expired');
+      return res.redirect('/forgot-password');
+    }
+    
+    // Token is valid, render reset password form
+    res.render('reset-password', {
+      title: 'Reset Password',
+      description: 'Set a new password for your account',
+      token: token
+    });
+  } catch (err) {
+    console.error('Error checking reset token:', err);
+    req.flash('error_msg', 'An error occurred. Please try again.');
+    res.redirect('/forgot-password');
+  }
 });
 
 // Reset password POST handler
@@ -296,12 +336,41 @@ app.post('/reset-password/:token', [
   }
   
   try {
-    // Here you would validate the token, find the user, and update the password
-    req.flash('success_msg', 'Your password has been updated');
-    res.redirect('/login');
+    const { token } = req.params;
+    const { password } = req.body;
+    const hashedToken = hashToken(token);
+    
+    // Find user with this token and check if it's still valid
+    const user = await User.findOne({
+      resetPasswordToken: hashedToken,
+      resetPasswordExpires: { $gt: Date.now() }
+    });
+    
+    if (!user) {
+      req.flash('error_msg', 'Password reset token is invalid or has expired');
+      return res.redirect('/forgot-password');
+    }
+    
+    // Update user's password and clear reset token
+    user.password = password;
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpires = undefined;
+    await user.save();
+    
+    // Log the user in automatically after password reset
+    req.login(user, (err) => {
+      if (err) {
+        console.error('Error logging in after password reset:', err);
+        req.flash('success_msg', 'Your password has been updated. Please log in with your new password.');
+        return res.redirect('/login');
+      }
+      
+      req.flash('success_msg', 'Your password has been updated and you are now logged in');
+      res.redirect('/admin/dashboard');
+    });
   } catch (err) {
     console.error('Reset password error:', err);
-    req.flash('error', 'Invalid or expired reset token');
+    req.flash('error', 'An error occurred while resetting your password');
     res.redirect('/forgot-password');
   }
 });

@@ -9,9 +9,15 @@
           <div class="h-1 w-16 bg-cyan-500 mx-auto" aria-hidden="true"></div>
         </div>
         
-        <!-- Error message -->
+        <!-- Message (success, error or test email URL) -->
+        {{#if success_msg}}
+          <div class="bg-green-900/50 border border-green-800 text-green-300 px-4 py-3 rounded mb-6">
+            <p>{{success_msg}}</p>
+          </div>
+        {{/if}}
+        
         {{#if error}}
-          <div class="bg-red-900/50 border border-red-800 text-red-300 px-4 py-3 rounded mb-6" role="alert">
+          <div class="bg-red-900/50 border border-red-800 text-red-300 px-4 py-3 rounded mb-6">
             <p>{{error}}</p>
           </div>
         {{/if}}
