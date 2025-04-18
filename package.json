@@ -4,16 +4,14 @@
   "description": "A tech blog built with Express and Handlebars",
   "main": "server.js",
 "scripts": {
-  "start": "node server.js",  
-  "dev": "concurrently \"npm run watch:css\" \"npm run watch:js\" \"nodemon server.js\"", 
-  "build": "npm run build:css && npm run build:js", 
-  
-  "build:css": "PATH=$PATH:./node_modules/.bin/ postcss src/css/tailwind.css -o public/css/styles.css --minify",
+  "start": "node server.js", 
+  "dev": "concurrently \"npm run watch:css\" \"npm run watch:js\" \"nodemon server.js\"",
+
+  "build:css": "postcss src/css/tailwind.css -o public/css/styles.css --minify", 
   "watch:css": "postcss src/css/tailwind.css -o public/css/styles.css --watch", 
-  
-  "build:js": "PATH=$PATH:./node_modules/.bin/ esbuild public/js/highlight-bundle.js --bundle --minify --outfile=public/js/highlight.min.js --format=iife && cp node_modules/marked/marked.min.js public/js/",
-  "watch:js": "esbuild public/js/highlight-bundle.js --bundle --outfile=public/js/highlight.min.js --format=iife --watch",
-  "init-admin": "node utils/initAdmin.js"
+  "build:js": "esbuild public/js/highlight-bundle.js --bundle --minify --outfile=public/js/highlight.min.js --format=iife && cp node_modules/marked/marked.min.js public/js/", 
+  "watch:js": "esbuild public/js/highlight-bundle.js --bundle --outfile=public/js/highlight.min.js --format=iife --watch", 
+  "init-admin": "node utils/initAdmin.js" 
 },
   "dependencies": {
     "@tailwindcss/typography": "^0.5.10",
@@ -33,7 +31,7 @@
     "passport-local": "^1.0.0",
     "postcss": "^8.4.38",
     "tailwindcss": "^3.4.17",
-    "uuid": "^9.0.1"
+    "uuid": "^11.1.0"
   },
   "devDependencies": {
     "concurrently": "^8.2.2",
