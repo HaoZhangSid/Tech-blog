@@ -10,15 +10,25 @@
     "build:css": "postcss src/css/tailwind.css -o public/css/styles.css --minify",
     "watch:css": "postcss src/css/tailwind.css -o public/css/styles.css --watch",
     "build:js": "esbuild public/js/highlight-bundle.js --bundle --minify --outfile=public/js/highlight.min.js --format=iife && cp node_modules/marked/marked.min.js public/js/",
-    "watch:js": "esbuild public/js/highlight-bundle.js --bundle --outfile=public/js/highlight.min.js --format=iife --watch"
+    "watch:js": "esbuild public/js/highlight-bundle.js --bundle --outfile=public/js/highlight.min.js --format=iife --watch",
+    "init-admin": "node utils/initAdmin.js"
   },
   "dependencies": {
     "@tailwindcss/typography": "^0.5.10",
     "autoprefixer": "^10.4.19",
+    "bcryptjs": "^2.4.3",
+    "connect-flash": "^0.1.1",
+    "dotenv": "^16.4.5",
     "express": "^5.1.0",
     "express-handlebars": "^8.0.1",
+    "express-session": "^1.18.0",
+    "express-validator": "^7.0.1",
     "highlight.js": "^11.11.1",
     "marked": "^15.0.8",
+    "mongoose": "^8.2.3",
+    "nodemailer": "^6.9.13",
+    "passport": "^0.7.0",
+    "passport-local": "^1.0.0",
     "postcss": "^8.4.38",
     "tailwindcss": "^3.4.17"
   },

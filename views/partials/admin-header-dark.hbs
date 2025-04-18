@@ -1,0 +1,186 @@
+<!-- Admin Header with dark theme -->
+<header class="bg-gray-800 border-b border-gray-700 shadow-md" role="banner">
+  <div class="container mx-auto px-4 py-3">
+    <div class="flex items-center justify-between">
+      <!-- Logo and site title -->
+      <div class="flex items-center">
+        <a href="/" class="flex items-center" aria-label="Tech Blog - Return to homepage">
+          <!-- Tech-themed logo icon -->
+          <div class="w-10 h-10 bg-gray-900 rounded-md flex items-center justify-center border border-cyan-500 mr-3" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+            </svg>
+          </div>
+          
+          <div>
+            <div class="text-white font-bold text-lg">Tech Blog</div>
+            <div class="text-gray-400 text-xs">Admin Dashboard</div>
+          </div>
+        </a>
+      </div>
+      
+      <!-- Navigation -->
+      {{!-- <nav class="hidden md:flex space-x-6" role="navigation" aria-label="Admin navigation">
+        <a href="/admin/posts" class="text-white hover:text-cyan-400 transition-colors py-1 focus:outline-none focus:ring-2 focus:ring-cyan-500 rounded-md px-2">
+          Posts
+        </a>
+        <a href="/admin/comments" class="text-gray-300 hover:text-cyan-400 transition-colors py-1 focus:outline-none focus:ring-2 focus:ring-cyan-500 rounded-md px-2">
+          Comments
+        </a>
+        <a href="/admin/settings" class="text-gray-300 hover:text-cyan-400 transition-colors py-1 focus:outline-none focus:ring-2 focus:ring-cyan-500 rounded-md px-2">
+          Settings
+        </a>
+      </nav> --}}
+      
+      <!-- Mobile menu button -->
+      <div class="md:hidden">
+        <button id="mobile-menu-button" class="text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 rounded-md p-1" aria-expanded="false" aria-controls="mobile-menu" aria-label="Toggle mobile menu">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+      </div>
+      
+      <!-- User menu -->
+      <div class="hidden md:block">
+        <div class="flex items-center">
+          <!-- View blog link -->
+          <a href="/" class="text-gray-300 hover:text-cyan-400 transition-colors text-sm mr-6 focus:outline-none focus:ring-2 focus:ring-cyan-500 rounded-md px-2 py-1">
+            View Blog
+          </a>
+          
+          <!-- User dropdown -->
+          <div class="relative">
+            <button id="user-menu-button" class="flex items-center text-gray-300 hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-cyan-500 rounded-md px-2 py-1" aria-haspopup="true" aria-expanded="false">
+              <span class="text-sm mr-2">{{user.name}}</span>
+              <div class="w-8 h-8 bg-gray-700 rounded-full flex items-center justify-center text-gray-300" aria-hidden="true">
+                {{user.initials}}
+              </div>
+            </button>
+            
+            <!-- Dropdown menu (hidden by default) -->
+            <div id="user-dropdown" class="hidden absolute right-0 mt-2 w-48 bg-gray-800 border border-gray-700 rounded-md shadow-lg py-1 z-10" role="menu" aria-labelledby="user-menu-button">
+              <a href="/admin/profile" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition-colors focus:outline-none focus:bg-gray-700 focus:text-white" role="menuitem">
+                Your Profile
+              </a>
+              <a href="/logout" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition-colors focus:outline-none focus:bg-gray-700 focus:text-white" role="menuitem">
+                Sign out
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Mobile menu (hidden by default) -->
+    <div id="mobile-menu" class="hidden md:hidden mt-3 pt-3 border-t border-gray-700" role="menu" aria-labelledby="mobile-menu-button">
+      <div class="space-y-1">
+        <a href="/admin/posts" class="block px-3 py-2 text-base text-white bg-gray-900 rounded-md" role="menuitem">
+          Posts
+        </a>
+        <a href="/admin/comments" class="block px-3 py-2 text-base text-gray-300 hover:bg-gray-700 hover:text-white rounded-md transition-colors focus:outline-none focus:bg-gray-700 focus:text-white" role="menuitem">
+          Comments
+        </a>
+        <a href="/admin/settings" class="block px-3 py-2 text-base text-gray-300 hover:bg-gray-700 hover:text-white rounded-md transition-colors focus:outline-none focus:bg-gray-700 focus:text-white" role="menuitem">
+          Settings
+        </a>
+        <a href="/" class="block px-3 py-2 text-base text-gray-300 hover:bg-gray-700 hover:text-white rounded-md transition-colors focus:outline-none focus:bg-gray-700 focus:text-white" role="menuitem">
+          View Blog
+        </a>
+        <a href="/logout" class="block px-3 py-2 text-base text-red-400 hover:bg-gray-700 hover:text-white rounded-md transition-colors focus:outline-none focus:bg-gray-700 focus:text-white" role="menuitem">
+          Sign out
+        </a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- JavaScript for dropdown toggle -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // User dropdown toggle
+    const userMenuButton = document.getElementById('user-menu-button');
+    const userDropdown = document.getElementById('user-dropdown');
+    
+    if (userMenuButton && userDropdown) {
+      userMenuButton.addEventListener('click', function() {
+        const isExpanded = userDropdown.classList.toggle('hidden') === false;
+        userMenuButton.setAttribute('aria-expanded', isExpanded);
+      });
+      
+      // Close dropdown when clicking outside
+      document.addEventListener('click', function(event) {
+        if (!userMenuButton.contains(event.target) && !userDropdown.contains(event.target)) {
+          userDropdown.classList.add('hidden');
+          userMenuButton.setAttribute('aria-expanded', 'false');
+        }
+      });
+      
+      // Close dropdown when escape is pressed
+      document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape' && !userDropdown.classList.contains('hidden')) {
+          userDropdown.classList.add('hidden');
+          userMenuButton.setAttribute('aria-expanded', 'false');
+          userMenuButton.focus();
+        }
+      });
+      
+      // Make dropdown menu keyboard navigable
+      const dropdownItems = userDropdown.querySelectorAll('[role="menuitem"]');
+      if (dropdownItems.length) {
+        userMenuButton.addEventListener('keydown', function(event) {
+          if (event.key === 'ArrowDown' && userDropdown.classList.contains('hidden')) {
+            event.preventDefault();
+            userDropdown.classList.remove('hidden');
+            userMenuButton.setAttribute('aria-expanded', 'true');
+            dropdownItems[0].focus();
+          }
+        });
+        
+        dropdownItems.forEach((item, index) => {
+          item.addEventListener('keydown', function(event) {
+            let targetItem;
+            
+            if (event.key === 'ArrowDown') {
+              event.preventDefault();
+              targetItem = index === dropdownItems.length - 1 ? dropdownItems[0] : dropdownItems[index + 1];
+            } else if (event.key === 'ArrowUp') {
+              event.preventDefault();
+              targetItem = index === 0 ? dropdownItems[dropdownItems.length - 1] : dropdownItems[index - 1];
+            } else if (event.key === 'Tab' && !event.shiftKey && index === dropdownItems.length - 1) {
+              userDropdown.classList.add('hidden');
+              userMenuButton.setAttribute('aria-expanded', 'false');
+            } else if (event.key === 'Tab' && event.shiftKey && index === 0) {
+              userDropdown.classList.add('hidden');
+              userMenuButton.setAttribute('aria-expanded', 'false');
+            }
+            
+            if (targetItem) {
+              targetItem.focus();
+            }
+          });
+        });
+      }
+    }
+    
+    // Mobile menu toggle
+    const mobileMenuButton = document.getElementById('mobile-menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
+    
+    if (mobileMenuButton && mobileMenu) {
+      mobileMenuButton.addEventListener('click', function() {
+        const isExpanded = mobileMenu.classList.toggle('hidden') === false;
+        mobileMenuButton.setAttribute('aria-expanded', isExpanded);
+      });
+      
+      // Close mobile menu when escape is pressed
+      document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape' && !mobileMenu.classList.contains('hidden')) {
+          mobileMenu.classList.add('hidden');
+          mobileMenuButton.setAttribute('aria-expanded', 'false');
+          mobileMenuButton.focus();
+        }
+      });
+    }
+  });
+</script> 
