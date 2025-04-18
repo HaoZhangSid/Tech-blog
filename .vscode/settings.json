@@ -4,5 +4,6 @@
   "scss.validate": false,
   "editor.quickSuggestions": {
     "strings": true
-  }
+  },
+  "commentTranslate.targetLanguage": "zh-CN"
 } 
