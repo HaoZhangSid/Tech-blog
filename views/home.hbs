@@ -27,8 +27,8 @@
                 <time datetime="{{createdAt}}">{{formatDate createdAt "MMMM D, YYYY"}}</time>
               </div>
               
-              <!-- Summary with subtle opacity change -->
-              <p class="text-gray-400 group-hover:text-gray-200 transition-colors duration-300 mb-4">{{summary}}</p>
+              <!-- Summary with subtle opacity change and line clamp -->
+              <p class="text-gray-400 group-hover:text-gray-200 transition-colors duration-300 mb-4 line-clamp-3">{{summary}}</p>
               
               <!-- Read more link with animated arrow -->
               <div class="flex items-center text-cyan-500 font-medium">
