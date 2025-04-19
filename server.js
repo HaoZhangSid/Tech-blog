@@ -27,6 +27,9 @@ const adminRoutes = require('./routes/admin');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Trust the Azure proxy to correctly handle secure connections (HTTPS)
+app.set('trust proxy', 1); // Adjust the number if behind multiple proxies
+
 // Connect to Database
 connectDB();
 
