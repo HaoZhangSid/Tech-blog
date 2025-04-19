@@ -2046,6 +2046,9 @@ pre {
 .duration-300 {
   transition-duration: 300ms;
 }
+.ease-out {
+  transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
+}
 .bg-gray-850 {
     background-color: #1a202e;
   }

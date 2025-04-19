@@ -1,0 +1,53 @@
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{title}} | Tech Blog</title>
+<meta name="description" content="{{description}}">
+
+<!-- Google Fonts Preconnect and Preload -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" as="style">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<!-- Local Tailwind CSS -->
+<link rel="stylesheet" href="/css/styles.css">
+
+<!-- Highlight.js CSS Theme (CDN) -->
+<link 
+  rel="stylesheet" 
+  href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css"
+  integrity="sha512-Jk4AqjWsdSzSWCSuQTfYRIF84Rq/eV0G2+tu07byYwHcbTGfdmLrHjUSwvzp5HvbiqK4ibmNwdcG49Y5RGYPTg=="
+  crossorigin="anonymous" 
+  referrerpolicy="no-referrer" 
+/>
+
+<!-- Font Awesome for icons (CDN) -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<!-- Font loading control script - Must be in head -->
+<script>
+  // Remove no-js class quickly
+  document.documentElement.classList.remove('no-js');
+
+  // Check if fonts are already cached and available
+  if (sessionStorage.fontsLoaded) {
+    document.documentElement.classList.add('fonts-loaded');
+  } else {
+    // Handle font loading completion
+    if ("fonts" in document) {
+      Promise.all([
+        document.fonts.load('1em Inter'),
+        document.fonts.load('1em JetBrains Mono')
+      ]).then(function () {
+        document.documentElement.classList.add('fonts-loaded');
+        // Cache font loading status
+        sessionStorage.fontsLoaded = true;
+      });
+    } else {
+      // Fallback: Assume fonts loaded after a timeout in older browsers
+      setTimeout(function() {
+        document.documentElement.classList.add('fonts-loaded');
+      }, 300);
+    }
+  }
+</script> 
