@@ -1,0 +1,85 @@
+/* 
+ * 表单和管理界面样式
+ * 包含所有表单元素和admin界面专用样式
+ */
+
+/* 开关按钮样式 */
+.form-switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+}
+
+.form-switch-checkbox {
+  height: 0;
+  width: 0;
+  visibility: hidden;
+  position: absolute;
+}
+
+.form-switch-label {
+  display: block;
+  overflow: hidden;
+  cursor: pointer;
+  background-color: #4B5563;
+  border-radius: 24px;
+  height: 24px;
+  width: 44px;
+  position: relative;
+  transition: background-color 0.2s ease;
+}
+
+.form-switch-label:after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 20px;
+  height: 20px;
+  background: #fff;
+  border-radius: 100%;
+  transition: 0.2s;
+}
+
+.form-switch-checkbox:checked + .form-switch-label {
+  background-color: #0891B2;
+}
+
+.form-switch-checkbox:checked + .form-switch-label:after {
+  left: calc(100% - 2px);
+  transform: translateX(-100%);
+}
+
+/* Admin表单样式 */
+#previewContent h1 {
+  font-size: 2.25rem; /* Text 4xl */
+  font-weight: 700; /* Font bold */
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+  color: white;
+}
+
+#previewContent h2 {
+  font-size: 1.875rem; /* Text 3xl */
+  font-weight: 700; /* Font bold */
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+  color: white;
+}
+
+#previewContent h3 {
+  font-size: 1.5rem; /* Text 2xl */
+  font-weight: 600; /* Font semibold */
+  margin-top: 1.25rem;
+  margin-bottom: 0.75rem;
+  color: white;
+}
+
+#previewContent h4 {
+  font-size: 1.25rem; /* Text xl */
+  font-weight: 600; /* Font semibold */
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  color: white;
+} 

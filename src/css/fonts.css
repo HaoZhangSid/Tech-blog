@@ -1,0 +1,64 @@
+/* 
+ * 字体和基础样式
+ * 包含所有字体加载、渲染优化和基础排版设置
+ */
+
+/* 无样式闪烁防护 */
+.no-js { opacity: 0; }
+html.fonts-loaded { opacity: 1; transition: opacity 0.2s ease-in; }
+
+/* 字体回退系统 */
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-size: 16px;
+  line-height: 1.5;
+  background-color: #111827;
+  color: #f3f4f6;
+}
+
+code, pre {
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+}
+
+.fonts-loaded body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+.fonts-loaded code, .fonts-loaded pre {
+  font-family: 'JetBrains Mono', "SFMono-Regular", Consolas, monospace;
+}
+
+/* 字体渲染优化 */
+html {
+  font-size: 16px;
+  text-size-adjust: 100%; /* 防止移动设备自动调整文本大小 */
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-size-adjust: 100%;
+}
+
+/* 尺寸锁定 - 防止在字体加载时布局移动 */
+h1, h2, h3, h4, h5, h6, p, li, td, th, 
+blockquote, button, input, textarea {
+  max-width: 100%;
+  overflow-wrap: break-word;
+}
+
+/* 移动端特殊优化 */
+@media (max-width: 768px) {
+  html {
+    font-size: 15px; /* 稍微减小基础字体大小 */
+  }
+  
+  /* 减少不必要的动画和过渡效果，提高性能 */
+  * {
+    transition-duration: 0.1s !important;
+    animation-duration: 0.1s !important;
+  }
+} 

@@ -1,0 +1,209 @@
+<div class="min-h-screen bg-gray-900 text-gray-100">
+  <div class="container mx-auto px-4 py-8 max-w-3xl">
+    <!-- Back to homepage -->
+    <a href="/" class="inline-flex items-center text-cyan-400 hover:text-cyan-300 mb-8 transition-colors focus:outline-none focus:ring-2 focus:ring-cyan-500 rounded-md px-2 py-1" aria-label="Back to all articles">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+      </svg>
+      Back to all articles
+    </a>
+
+    <!-- Article header -->
+    <header class="mb-8">
+      <h1 class="text-4xl font-bold text-white mb-4 leading-tight">{{post.title}}</h1>
+      <div class="flex items-center text-sm text-gray-400">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+        </svg>
+        <time datetime="{{post.createdAt}}">{{formatDate post.createdAt "MMMM D, YYYY"}}</time>
+      </div>
+    </header>
+
+    <!-- Article content -->
+    <article class="prose prose-lg prose-invert max-w-none mb-16">
+      <div class="markdown-content">{{{post.content}}}</div>
+    </article>
+
+    <!-- Comments section -->
+    <section class="mt-12 border-t border-gray-800 pt-8" aria-labelledby="comments-heading">
+      <h2 id="comments-heading" class="text-2xl font-bold text-white mb-8">Comments</h2>
+
+      <!-- Comments list -->
+      {{#if comments.length}}
+        <div class="space-y-8 mb-12" role="feed" aria-label="Comments on this article">
+          {{#each comments}}
+            <div class="bg-gray-800 rounded-lg p-6 border border-gray-700">
+              <div class="flex justify-between items-start mb-4">
+                <div>
+                  <h3 class="font-medium text-white">{{authorName}}</h3>
+                  <time class="text-sm text-gray-400" datetime="{{createdAt}}">
+                    {{formatDate createdAt "MMMM D, YYYY"}}
+                  </time>
+                </div>
+                
+                {{#if ../user}}
+                  <button 
+                    class="text-red-500 hover:text-red-400 transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 rounded-full p-1" 
+                    data-comment-id="{{_id}}"
+                    onclick="deleteComment('{{_id}}')"
+                    aria-label="Delete comment by {{authorName}}"
+                  >
+                    <span class="sr-only">Delete</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                      <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
+                    </svg>
+                  </button>
+                {{/if}}
+              </div>
+              
+              <p class="text-gray-300">{{content}}</p>
+            </div>
+          {{/each}}
+        </div>
+      {{else}}
+        <div class="bg-gray-800 rounded-lg p-8 text-center border border-gray-700 mb-12">
+          <p class="text-gray-400">No comments yet. Be the first to share your thoughts!</p>
+        </div>
+      {{/if}}
+
+      <!-- Comment form -->
+      <div class="bg-gray-800 rounded-lg p-6 border border-gray-700">
+        <h3 id="comment-form-heading" class="text-xl font-semibold text-white mb-4">Add a Comment</h3>
+        <form action="/post/{{post._id}}/comment" method="POST" aria-labelledby="comment-form-heading">
+          <div class="mb-4">
+            <label for="authorName" class="block text-sm font-medium text-gray-300 mb-2">Name</label>
+            <input 
+              type="text" 
+              id="authorName" 
+              name="authorName" 
+              class="w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-4 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+              required
+              aria-required="true"
+            >
+          </div>
+          
+          <div class="mb-6">
+            <label for="content" class="block text-sm font-medium text-gray-300 mb-2">Comment</label>
+            <textarea 
+              id="content" 
+              name="content" 
+              rows="4"
+              class="w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-4 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+              required
+              aria-required="true"
+            ></textarea>
+          </div>
+          
+          <button 
+            type="submit"
+            class="bg-cyan-600 hover:bg-cyan-700 text-white font-medium py-2 px-6 rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-cyan-500"
+          >
+            Post Comment
+          </button>
+        </form>
+      </div>
+    </section>
+  </div>
+</div>
+
+<!-- Client-side JS for syntax highlighting and comment deletion -->
+<script>
+  // Initialize syntax highlighting for all code blocks
+  document.addEventListener('DOMContentLoaded', () => {
+    // Apply syntax highlighting to all code blocks
+    document.querySelectorAll('pre code').forEach((block) => {
+      // Check if the block has a language class
+      const langMatch = block.className.match(/language-(\w+)/);
+      if (langMatch) {
+        // If language is specified
+        try {
+          hljs.highlightBlock(block);
+          
+          // Add language tag for accessibility
+          const language = langMatch[1];
+          const wrapper = document.createElement('div');
+          wrapper.className = 'code-block-wrapper';
+          
+          const languageTag = document.createElement('div');
+          languageTag.className = 'code-language-tag';
+          languageTag.textContent = language;
+          languageTag.setAttribute('aria-hidden', 'true');
+          
+          // Wrap the code block
+          block.parentNode.insertBefore(wrapper, block);
+          wrapper.appendChild(block);
+          wrapper.appendChild(languageTag);
+          
+          // Add screen reader text
+          const srText = document.createElement('span');
+          srText.className = 'sr-only';
+          srText.textContent = `Code block in ${language}`;
+          wrapper.prepend(srText);
+        } catch (error) {
+          console.error('Error applying syntax highlighting:', error);
+        }
+      } else {
+        // If no language is specified, try to auto-detect
+        hljs.highlightAuto(block);
+      }
+    });
+    
+    // Add line numbers to code blocks (optional)
+    document.querySelectorAll('pre code').forEach((block, i) => {
+      // Add ID to the code block
+      block.id = `code-block-${i}`;
+      
+      // Get the lines of code
+      const lines = block.textContent.split('\n');
+      if (lines[lines.length - 1] === '') lines.pop();
+      
+      // Add aria-label with line count for screen readers
+      block.setAttribute('aria-label', `Code block with ${lines.length} lines`);
+    });
+  });
+  
+  // Function to delete a comment (this would typically make an API request)
+  function deleteComment(commentId) {
+    if (confirm('Are you sure you want to delete this comment?')) {
+      // For demo purposes, we'll just alert
+      alert(`Comment with ID ${commentId} would be deleted. This is just a demo.`);
+    }
+  }
+</script>
+
+<!-- 添加Markdown渲染脚本 -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // 渲染Markdown内容
+    const markdownContent = document.querySelector('.markdown-content');
+    if (markdownContent) {
+      console.log('找到markdown内容元素');
+      const rawMarkdown = markdownContent.textContent;
+      console.log('原始内容:', rawMarkdown);
+      
+      try {
+        // 确保marked已定义
+        if (typeof marked !== 'undefined') {
+          console.log('Marked库已加载');
+          const htmlContent = marked.parse(rawMarkdown);
+          markdownContent.innerHTML = htmlContent;
+          console.log('Markdown已渲染为HTML');
+          
+          // 应用语法高亮
+          if (typeof hljs !== 'undefined') {
+            document.querySelectorAll('pre code').forEach((block) => {
+              hljs.highlightBlock(block);
+            });
+            console.log('语法高亮已应用');
+          }
+        } else {
+          console.error('Marked库未加载');
+        }
+      } catch (error) {
+        console.error('渲染Markdown时出错:', error);
+      }
+    } else {
+      console.error('未找到.markdown-content元素');
+    }
+  });
+</script> 

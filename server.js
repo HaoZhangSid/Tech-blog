@@ -28,6 +28,9 @@ const { ensureAuthenticated } = require('./middleware/auth');
 const { generateResetToken, hashToken, verifyToken, getTokenExpiration } = require('./utils/tokenGenerator');
 const emailSender = require('./utils/emailSender');
 
+// Import sample data for development
+const { samplePosts, sampleComments, adminUser } = require('./data/sampleData');
+
 // Initialize Express app
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -168,12 +171,63 @@ passport.deserializeUser(async (id, done) => {
 
 // ----- Routes -----
 
-// Home page - simple redirect to login for this auth-focused version
+// Home page - display blog posts
 app.get('/', (req, res) => {
-  if (req.isAuthenticated()) {
-    return res.redirect('/admin/dashboard');
+  // Filter published posts for public view
+  const publishedPosts = samplePosts.filter(post => post.published);
+  
+  res.render('home', {
+    title: 'Home',
+    description: 'A blog about web development and technology',
+    posts: publishedPosts,
+    user: req.user
+  });
+});
+
+// Post detail page
+app.get('/post/:slug', (req, res) => {
+  const { slug } = req.params;
+  
+  // Find post by slug
+  const post = samplePosts.find(post => post.slug === slug);
+  
+  if (!post) {
+    return res.status(404).render('404', {
+      title: 'Post Not Found',
+      description: 'The requested post could not be found',
+      user: req.user
+    });
   }
-  res.redirect('/login');
+  
+  // Find comments for this post
+  const comments = sampleComments.filter(comment => comment.postId === post._id);
+  
+  res.render('post-detail', {
+    title: post.title,
+    description: post.summary,
+    post,
+    comments,
+    user: req.user
+  });
+});
+
+// Comment submission route
+app.post('/post/:id/comment', (req, res) => {
+  const { id } = req.params;
+  const { authorName, content } = req.body;
+  
+  // Find post by ID
+  const post = samplePosts.find(post => post._id === id);
+  
+  if (!post) {
+    req.flash('error_msg', 'Post not found');
+    return res.redirect('/');
+  }
+  
+  // In a real app, you would save the comment to the database
+  // Here we'll just redirect back to the post detail page
+  req.flash('success_msg', 'Comment added successfully');
+  res.redirect(`/post/${post.slug}`);
 });
 
 // About page
@@ -381,8 +435,93 @@ app.get('/admin/dashboard', ensureAuthenticated, (req, res) => {
     title: 'Admin Dashboard',
     description: 'Manage your blog',
     user: req.user,
-    layout: 'admin'
+    isAdminPage: true,
+    postCount: samplePosts.length,
+    commentCount: sampleComments.length
   });
+});
+
+// Admin posts list - protected route
+app.get('/admin/posts', ensureAuthenticated, (req, res) => {
+  res.render('admin-posts-list', {
+    title: 'Manage Posts',
+    description: 'View and manage all blog posts',
+    user: req.user,
+    isAdminPage: true,
+    posts: samplePosts
+  });
+});
+
+// New post form - protected route
+app.get('/admin/posts/new', ensureAuthenticated, (req, res) => {
+  res.render('admin-post-form', {
+    title: 'New Post',
+    description: 'Create a new blog post',
+    user: req.user,
+    isAdminPage: true,
+    isEditing: false,
+    post: {} // Empty post for the form
+  });
+});
+
+// Create new post - protected route
+app.post('/admin/posts/new', ensureAuthenticated, (req, res) => {
+  const { title, slug, summary, content, published } = req.body;
+  
+  // In a real app, you would save the post to the database
+  // Here we'll just redirect back to the posts list
+  req.flash('success_msg', 'Post created successfully');
+  res.redirect('/admin/posts');
+});
+
+// Edit post form - protected route
+app.get('/admin/posts/edit/:id', ensureAuthenticated, (req, res) => {
+  const { id } = req.params;
+  
+  // Find post by ID
+  const post = samplePosts.find(post => post._id === id);
+  
+  if (!post) {
+    req.flash('error_msg', 'Post not found');
+    return res.redirect('/admin/posts');
+  }
+  
+  res.render('admin-post-form', {
+    title: 'Edit Post',
+    description: 'Edit an existing blog post',
+    user: req.user,
+    isAdminPage: true,
+    isEditing: true,
+    post
+  });
+});
+
+// Update post - protected route
+app.post('/admin/posts/edit/:id', ensureAuthenticated, (req, res) => {
+  const { id } = req.params;
+  const { title, slug, summary, content, published } = req.body;
+  
+  // Find post by ID
+  const post = samplePosts.find(post => post._id === id);
+  
+  if (!post) {
+    req.flash('error_msg', 'Post not found');
+    return res.redirect('/admin/posts');
+  }
+  
+  // In a real app, you would update the post in the database
+  // Here we'll just redirect back to the posts list
+  req.flash('success_msg', 'Post updated successfully');
+  res.redirect('/admin/posts');
+});
+
+// Delete post - protected route
+app.delete('/admin/posts/:id', ensureAuthenticated, (req, res) => {
+  const { id } = req.params;
+  
+  // In a real app, you would delete the post from the database
+  // Here we'll just send a success response
+  res.status(200).json({ success: true });
 });
 
 // 404 page - catch-all for undefined routes

@@ -1,0 +1,365 @@
+{{> admin-header-dark}}
+
+<div class="min-h-screen bg-gray-900 text-gray-100 pb-12">
+  <div class="container mx-auto px-4 py-8 max-w-4xl">
+    <!-- Header section -->
+    <header class="mb-8">
+      <h1 class="text-3xl font-bold text-white">{{#if isEditing}}Edit Post{{else}}Write New Post{{/if}}</h1>
+      <p class="text-gray-400 mt-2">{{#if isEditing}}Update your existing content{{else}}Create amazing content for your readers{{/if}}</p>
+    </header>
+
+    <!-- Form card -->
+    <div class="bg-gray-800 rounded-lg border border-gray-700 overflow-hidden shadow-lg">
+      <form action="{{#if isEditing}}/admin/posts/edit/{{post._id}}{{else}}/admin/posts/new{{/if}}" method="POST" class="p-6">
+        
+        <!-- Title input -->
+        <div class="mb-6">
+          <label for="title" class="block text-sm font-medium text-gray-300 mb-2">Title</label>
+          <input 
+            type="text" 
+            id="title" 
+            name="title" 
+            value="{{post.title}}" 
+            required
+            class="w-full bg-gray-700 border border-gray-600 rounded-md py-3 px-4 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+            placeholder="Enter post title"
+          >
+        </div>
+        
+        <!-- Slug input -->
+        <div class="mb-6">
+          <label for="slug" class="block text-sm font-medium text-gray-300 mb-2">
+            Slug
+            <span class="text-gray-500 text-xs ml-1">(URL-friendly identifier)</span>
+          </label>
+          <div class="flex">
+            <span class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-600 bg-gray-800 text-gray-400 text-sm">
+              /post/
+            </span>
+            <input 
+              type="text" 
+              id="slug" 
+              name="slug" 
+              value="{{post.slug}}" 
+              required
+              class="w-full bg-gray-700 border border-gray-600 rounded-r-md py-3 px-4 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+              placeholder="my-awesome-post"
+            >
+          </div>
+          <p class="text-xs text-gray-400 mt-1">Use lowercase letters, numbers, and hyphens only.</p>
+        </div>
+        
+        <!-- Summary input -->
+        <div class="mb-6">
+          <label for="summary" class="block text-sm font-medium text-gray-300 mb-2">
+            Summary
+            <span class="text-gray-500 text-xs ml-1">(Brief description for post listings)</span>
+          </label>
+          <textarea 
+            id="summary" 
+            name="summary" 
+            rows="2"
+            class="w-full bg-gray-700 border border-gray-600 rounded-md py-3 px-4 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+            placeholder="Enter a brief summary of your post"
+          >{{post.summary}}</textarea>
+        </div>
+        
+        <!-- Content input with Markdown support -->
+        <div class="mb-6">
+          <div class="flex justify-between items-center mb-2">
+            <label for="content" class="block text-sm font-medium text-gray-300">
+              Content
+              <span class="text-gray-500 text-xs ml-1">(Markdown supported)</span>
+            </label>
+            <div class="text-sm text-gray-400 flex items-center">
+              <span class="mr-2">Markdown</span>
+              <button 
+                type="button"
+                id="previewToggle"
+                class="px-3 py-1 bg-gray-700 hover:bg-gray-600 rounded-md text-cyan-400 text-xs font-medium transition-colors"
+              >
+                Preview
+              </button>
+            </div>
+          </div>
+          
+          <!-- Markdown Editor -->
+          <div id="editorContainer" class="relative">
+            <!-- Editor Area -->
+            <div id="editor" class="block">
+              <textarea 
+                id="content" 
+                name="content" 
+                rows="20"
+                class="w-full bg-gray-700 border border-gray-600 rounded-md py-3 px-4 text-white font-mono text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+                placeholder="Write your post content in Markdown format..."
+              >{{post.content}}</textarea>
+            </div>
+            
+            <!-- Preview Area (hidden by default) -->
+            <div id="preview" class="hidden p-4 bg-gray-700 border border-gray-600 rounded-md h-[calc(20*1.5rem+1.5rem)] overflow-y-auto">
+              <div id="previewContent" class="prose prose-invert max-w-none">
+                <!-- Preview content will be injected here by JavaScript -->
+              </div>
+            </div>
+          </div>
+          
+          <!-- Markdown quick reference -->
+          <div class="mt-2 p-3 bg-gray-850 rounded-md border border-gray-700">
+            <h4 class="text-sm font-medium text-gray-300 mb-2">Markdown Reference:</h4>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs text-gray-400">
+              <div>
+                <code class="text-cyan-400"># Heading 1</code>
+              </div>
+              <div>
+                <code class="text-cyan-400">**Bold**</code>
+              </div>
+              <div>
+                <code class="text-cyan-400">[Link](url)</code>
+              </div>
+              <div>
+                <code class="text-cyan-400">![Image](url)</code>
+              </div>
+              <div>
+                <code class="text-cyan-400">```code```</code>
+              </div>
+              <div>
+                <code class="text-cyan-400">- List item</code>
+              </div>
+              <div>
+                <code class="text-cyan-400">> Quote</code>
+              </div>
+              <div>
+                <code class="text-cyan-400">---</code> (HR)
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Published status toggle -->
+        <div class="mb-8">
+          <div class="flex items-center">
+            <div class="form-switch inline-block align-middle">
+              <input 
+                type="checkbox" 
+                id="published" 
+                name="published" 
+                class="form-switch-checkbox" 
+                {{#if post.published}}checked{{/if}}
+              >
+              <label class="form-switch-label" for="published"></label>
+            </div>
+            <label for="published" class="text-gray-300 ml-2">Published</label>
+          </div>
+          <p class="text-xs text-gray-400 mt-1">Unpublished posts are saved as drafts and not visible to readers.</p>
+        </div>
+        
+        <!-- Submit button group -->
+        <div class="flex items-center justify-between mt-8">
+          <a 
+            href="/admin/posts" 
+            class="px-5 py-2 bg-gray-700 hover:bg-gray-600 text-gray-300 rounded-md transition-colors"
+          >
+            Cancel
+          </a>
+          
+          <button 
+            type="submit"
+            class="px-8 py-3 bg-cyan-600 hover:bg-cyan-700 text-white font-medium rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-cyan-500"
+          >
+            {{#if isEditing}}Update Post{{else}}Save Post{{/if}}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Custom switch styling -->
+<style>
+  .form-switch {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 24px;
+  }
+  
+  .form-switch-checkbox {
+    height: 0;
+    width: 0;
+    visibility: hidden;
+    position: absolute;
+  }
+  
+  .form-switch-label {
+    display: block;
+    overflow: hidden;
+    cursor: pointer;
+    background-color: #4B5563;
+    border-radius: 24px;
+    height: 24px;
+    width: 44px;
+    position: relative;
+    transition: background-color 0.2s ease;
+  }
+  
+  .form-switch-label:after {
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 20px;
+    height: 20px;
+    background: #fff;
+    border-radius: 100%;
+    transition: 0.2s;
+  }
+  
+  .form-switch-checkbox:checked + .form-switch-label {
+    background-color: #0891B2;
+  }
+  
+  .form-switch-checkbox:checked + .form-switch-label:after {
+    left: calc(100% - 2px);
+    transform: translateX(-100%);
+  }
+  
+  /* Enhanced title styles in markdown preview */
+  #previewContent h1 {
+    font-size: 2.25rem; /* Text 4xl */
+    font-weight: 700; /* Font bold */
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+    color: white;
+  }
+  
+  #previewContent h2 {
+    font-size: 1.875rem; /* Text 3xl */
+    font-weight: 700; /* Font bold */
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    color: white;
+  }
+  
+  #previewContent h3 {
+    font-size: 1.5rem; /* Text 2xl */
+    font-weight: 600; /* Font semibold */
+    margin-top: 1.25rem;
+    margin-bottom: 0.75rem;
+    color: white;
+  }
+  
+  #previewContent h4 {
+    font-size: 1.25rem; /* Text xl */
+    font-weight: 600; /* Font semibold */
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+    color: white;
+  }
+</style>
+
+<!-- JavaScript for Markdown preview -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const contentTextarea = document.getElementById('content');
+    const previewToggle = document.getElementById('previewToggle');
+    const editorArea = document.getElementById('editor');
+    const previewArea = document.getElementById('preview');
+    const previewContent = document.getElementById('previewContent');
+    
+    // Debugging information
+
+    console.log('Preview toggle button:', previewToggle);
+    console.log('Marked library available:', typeof marked);
+    
+    // Make sure marked is defined as a global variable
+
+    if (typeof marked === 'undefined' && window.marked) {
+      window.marked = marked;
+    }
+    
+    // If we have the marked library included by the layout
+
+    if (typeof marked !== 'undefined') {
+      // Configure marked options to ensure the title is handled correctly
+
+      marked.setOptions({
+        headerIds: false,
+        breaks: true, 
+        gfm: true
+      });
+      
+      let isPreviewMode = false;
+      
+      previewToggle.addEventListener('click', function(e) {
+        // Prevent form submission
+
+        e.preventDefault();
+        
+        console.log('Preview toggle clicked, current mode:', isPreviewMode);
+        isPreviewMode = !isPreviewMode;
+        
+        if (isPreviewMode) {
+          // Render markdown using marked library
+
+          try {
+            console.log('Content to render:', contentTextarea.value);
+            const rawMarkdown = contentTextarea.value;
+            // Make sure there is a line break before the title
+
+            const processedMarkdown = rawMarkdown.replace(/([^\n])(\n?)(#+\s)/g, '$1\n\n$3');
+            previewContent.innerHTML = marked.parse(processedMarkdown);
+            
+            // Show preview area, hide edit area
+
+            editorArea.classList.add('hidden');
+            previewArea.classList.remove('hidden');
+            previewToggle.textContent = 'Edit';
+            
+            // Apply grammar highlighting
+
+            if (typeof hljs !== 'undefined') {
+              document.querySelectorAll('pre code').forEach((block) => {
+                hljs.highlightBlock(block);
+              });
+            }
+          } catch (error) {
+            console.error('Error rendering Markdown:', error);
+          }
+        } else {
+          // Show editing area, hide preview area
+
+          editorArea.classList.remove('hidden');
+          previewArea.classList.add('hidden');
+          previewToggle.textContent = 'Preview';
+        }
+      });
+    } else {
+      console.error('Marked library not available');
+      // If the marked library is not available, disable the preview button
+
+      previewToggle.disabled = true;
+      previewToggle.classList.add('opacity-50', 'cursor-not-allowed');
+    }
+    
+    // Handle slug generation from title (optional helper)
+
+    const titleInput = document.getElementById('title');
+    const slugInput = document.getElementById('slug');
+    
+    if (!slugInput.value && titleInput) {
+      titleInput.addEventListener('blur', function() {
+        if (!slugInput.value && titleInput.value) {
+          // Convert title to slug format (lowercase, replace spaces with hyphens, remove special chars)
+
+          const slug = titleInput.value
+            .toLowerCase()
+            .replace(/[^\w\s-]/g, '')
+            .replace(/\s+/g, '-');
+          
+          slugInput.value = slug;
+        }
+      });
+    }
+  });
+</script> 

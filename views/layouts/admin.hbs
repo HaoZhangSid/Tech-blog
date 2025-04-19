@@ -1,10 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="no-js">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{{title}} | Admin Panel - Tech Blog</title>
   <meta name="description" content="{{description}}">
+  
+  <!-- Google Fonts 预连接和预加载 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" as="style">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   
   <!-- 使用本地Tailwind CSS -->
   <link rel="stylesheet" href="/css/styles.css">
@@ -16,22 +22,37 @@
   <!-- 使用本地Marked.js -->
   <script src="/js/marked.min.js"></script>
   
-  <!-- Google Fonts: Inter (sans-serif) and JetBrains Mono (monospace) -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-  
-  <!-- Custom styling for grid pattern background -->
-  <style>
-    /* Custom styling for grid pattern background */
-    .bg-grid-pattern {
-      background-color: #111827;
-      background-image: 
-        linear-gradient(rgba(30, 41, 59, 0.3) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(30, 41, 59, 0.3) 1px, transparent 1px);
-      background-size: 25px 25px;
-    }
-  </style>
+  <!-- 控制字体加载的脚本 - 必须放在头部 -->
+  <script>
+    // 快速检查字体是否已加载
+    (function() {
+      // 移除no-js类
+      document.documentElement.classList.remove('no-js');
+      
+      // 检查字体是否已缓存并可用
+      if (sessionStorage.fontsLoaded) {
+        document.documentElement.classList.add('fonts-loaded');
+        return;
+      }
+      
+      // 字体加载完成后的处理
+      if ("fonts" in document) {
+        Promise.all([
+          document.fonts.load('1em Inter'),
+          document.fonts.load('1em JetBrains Mono')
+        ]).then(function () {
+          document.documentElement.classList.add('fonts-loaded');
+          // 缓存字体加载状态
+          sessionStorage.fontsLoaded = true;
+        });
+      } else {
+        // 回退：在旧浏览器中设置超时后假定字体已加载
+        setTimeout(function() {
+          document.documentElement.classList.add('fonts-loaded');
+        }, 300);
+      }
+    })();
+  </script>
 </head>
 <body class="bg-gray-900 min-h-screen flex flex-col">
   <!-- Skip to main content link for keyboard users -->

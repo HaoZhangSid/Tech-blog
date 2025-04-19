@@ -2,7 +2,31 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Custom styles */
+/* 
+ * 导入所有其他样式文件
+ * 在所有Tailwind指令之后导入，确保我们的样式可以覆盖Tailwind默认样式
+ */
+@import 'fonts.css';
+@import 'components.css';
+@import 'markdown.css';
+@import 'forms.css';
+
+/* Tailwind自定义扩展 */
+@layer utilities {
+  .bg-gray-850 {
+    background-color: #1a202e;
+  }
+  
+  .bg-gray-950 {
+    background-color: #0b0f19;
+  }
+  
+  .prose-invert code {
+    color: #e2e8f0;
+  }
+}
+
+/* Tailwind基础样式扩展 */
 @layer base {
   body {
     @apply bg-gray-900 text-gray-100 font-sans;
@@ -13,15 +37,16 @@
   }
 }
 
+/* Tailwind组件扩展 */
 @layer components {
-  /* Code highlight related styles */
+  /* 代码高亮相关样式 */
   .hljs {
     @apply bg-gray-950 !important;
     @apply rounded-md;
     @apply p-4;
   }
   
-  /* Custom prose style */
+  /* 自定义prose样式 - 这些会被我们的markdown.css覆盖，但为了兼容性保留 */
   .prose {
     @apply text-gray-100;
   }

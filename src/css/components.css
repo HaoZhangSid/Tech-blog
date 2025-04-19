@@ -1,0 +1,83 @@
+/* 
+ * 组件样式
+ * 包含网站所有通用UI组件的样式
+ */
+
+/* 自定义滚动条 */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1a1a1a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #444;
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #666;
+}
+
+/* 网格背景图案 (admin页面) */
+.bg-grid-pattern {
+  background-color: #111827;
+  background-image: 
+    linear-gradient(rgba(30, 41, 59, 0.3) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(30, 41, 59, 0.3) 1px, transparent 1px);
+  background-size: 25px 25px;
+}
+
+/* 代码块样式 */
+.code-block-wrapper {
+  position: relative;
+}
+
+.code-language-tag {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: #2d2d2d;
+  color: #e0e0e0;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  border-bottom-left-radius: 0.25rem;
+  user-select: none;
+}
+
+/* 代码行数样式 */
+pre {
+  position: relative;
+  counter-reset: line;
+}
+
+.line-numbers-container {
+  position: absolute;
+  left: 0;
+  top: 0;
+  padding: 1rem 0.5rem 1rem 0;
+  width: 2.5rem;
+  text-align: right;
+  color: #6272a4;
+  border-right: 1px solid #333;
+  user-select: none;
+}
+
+.line-number {
+  display: block;
+  counter-increment: line;
+  height: 1.25rem;
+  line-height: 1.25rem;
+}
+
+.line-number:before {
+  content: counter(line);
+  font-size: 0.85em;
+}
+
+.line-numbers-container + code {
+  margin-left: 3rem;
+  padding-left: 0 !important;
+} 
