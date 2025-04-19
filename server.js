@@ -11,6 +11,7 @@ const path = require('path');
 const session = require('express-session');
 const passport = require('passport');
 const flash = require('connect-flash');
+const MongoStore = require('connect-mongo');
 
 // Configuration modules
 const connectDB = require('./config/db');
@@ -42,15 +43,20 @@ app.use(express.json());
 // Serve static files
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Session configuration
+// Session configuration with MongoStore
 app.use(session({
-  secret: process.env.SESSION_SECRET || 'default_session_secret',
+  secret: process.env.SESSION_SECRET || 'fallback_secret_for_safety',
   resave: false,
   saveUninitialized: false,
+  store: MongoStore.create({
+    mongoUrl: process.env.MONGODB_URI,
+    collectionName: 'sessions',
+    ttl: 14 * 24 * 60 * 60
+  }),
   cookie: {
-    maxAge: 1000 * 60 * 60 * 24, // 1 day
+    maxAge: 1000 * 60 * 60 * 24,
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production' // Use secure cookies in production
+    secure: process.env.NODE_ENV === 'production'
   }
 }));
 
