@@ -2053,10 +2053,7 @@ pre {
     color: #e2e8f0;
   }
 
-/* 
- * 导入所有其他样式文件
- * 在所有Tailwind指令之后导入，确保我们的样式可以覆盖Tailwind默认样式
- */
+/* 把 @import 语句放在这里 */
 @import 'fonts.css';
 @import 'components.css';
 @import 'markdown.css';
